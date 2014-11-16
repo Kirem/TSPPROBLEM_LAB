@@ -33,6 +33,10 @@ public:
 
 	void addExcludedPath(pair<int, int> p) {
 		excluded.push_back(p);
+	}	
+	
+	void addToFinalPath(pair<int, int> p) {
+		path.push_back(p);
 	}
 
 

@@ -1,1 +1,5 @@
-﻿  TSPPROBLEM.vcxproj -> D:\mirek\studia\PEA\LAB\pea_lab_1\TSPPROBLEM\Debug\TSPPROBLEM.exe
+﻿  main.cpp
+d:\mirek\studia\pea\lab\pea_lab_1\tspproblem\tspproblem\node.h(25): warning C4305: '=' : truncation from 'int' to 'float'
+d:\mirek\studia\pea\lab\pea_lab_1\tspproblem\tspproblem\node.h(56): warning C4244: 'return' : conversion from 'float' to 'int', possible loss of data
+d:\mirek\studia\pea\lab\pea_lab_1\tspproblem\tspproblem\branchandbound.h(176): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+  TSPPROBLEM.vcxproj -> D:\mirek\studia\PEA\LAB\pea_lab_1\TSPPROBLEM\Debug\TSPPROBLEM.exe

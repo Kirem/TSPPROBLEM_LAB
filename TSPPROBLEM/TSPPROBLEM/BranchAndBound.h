@@ -210,8 +210,13 @@ public:
 			if(!n.isCorrectNode()) {
 				return;
 			}
+			pair<int, int> path1(i, smallestPaths.first.first);
+			pair<int, int> path2(i, smallestPaths.second.first);
+			n.addToFinalPath(path1);
+			n.addToFinalPath(path2);
 			sumOfPaths += smallestPaths.first.second;
 			sumOfPaths += smallestPaths.second.second;
+			
 		}
 		sumOfPaths /= 2;
 		n.setLowBoundry(sumOfPaths);
@@ -265,10 +270,12 @@ public:
 	void setIsFinalAndIsCorrectNodeIfNecessary(Node &n) {
 		int* counterIncluded = new int[salesman.getNumberOfCities()];
 		int* counterExcluded = new int[salesman.getNumberOfCities()];
+		int* counterFinal	 = new int[salesman.getNumberOfCities()];
 
 		for(int i = 0; i < salesman.getNumberOfCities(); i++) {
 			counterIncluded[i] = 0;
 			counterExcluded[i] = 0;
+			counterFinal[i] = 0;
 		}
 
 		for(int i = 0; i < n.getExcludedSize(); i++) {
@@ -281,14 +288,15 @@ public:
 			counterIncluded[n.getIncludedAt(i).second]++;
 		}
 
+		for each (pair<int, int> finalPair in n.getPath()) {
+			counterFinal[finalPair.first]++;
+			counterFinal[finalPair.second]++;
+		}
+
 		for(int i = 0; i < salesman.getNumberOfCities(); i++) {
 			if(counterIncluded[i] > 2) {
 				n.setIsCorrectNode(false);
 				break;
-			}
-
-			if(counterIncluded[i] < 2) {
-				n.setIsFinal(false);
 			}
 		}
 
@@ -298,8 +306,17 @@ public:
 				n.setIsCorrectNode(false);
 				break;
 			}
-
 		}
+
+		for(int i = 0; i < salesman.getNumberOfCities(); i++) {
+			cout << counterFinal[i] << " ";
+
+			if(counterFinal[i] < 2) {
+				n.setIsFinal(false);
+			}
+		}
+		cout << endl<<endl;
+
 	}
 
 	pair<pair<int, int>, pair<int, int>> getIncluded(Node &n, int start) {
