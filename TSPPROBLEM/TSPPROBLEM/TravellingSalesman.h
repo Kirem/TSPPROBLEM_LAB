@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 
 using namespace std;
@@ -11,4 +12,5 @@ public:
 	void loadPaths(istream&);
 	void printPaths(ostream&);
 	int getPathValue(int, int);
+	int getNumberOfCities();
 };

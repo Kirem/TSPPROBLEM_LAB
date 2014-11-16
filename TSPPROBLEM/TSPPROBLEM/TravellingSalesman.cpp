@@ -32,3 +32,7 @@ void TravellingSalesman::printPaths(ostream& stream) {
 int TravellingSalesman::getPathValue(int fromCity, int toCity) {
 	return pathsValue[fromCity][toCity];
 }
+
+int TravellingSalesman::getNumberOfCities() {
+	return numberOfCities;
+}
