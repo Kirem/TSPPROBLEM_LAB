@@ -9,6 +9,7 @@ class Node {
 	vector<pair<int, int>> included;
 	vector<pair<int, int>> excluded;
 	vector<pair<int, int>> path;
+	string overallFinalPath;
 public:
 	Node(const Node& n) {
 		included = n.included;
@@ -17,12 +18,13 @@ public:
 		isPossible = n.isPossible;
 		path = n.path;
 		finalNode = n.finalNode;
+		overallFinalPath = n.overallFinalPath;
 	}
 
 	Node() {
 		isPossible = true;
 		finalNode = true;
-		lowBoundry = INT_MAX;
+		lowBoundry = 999999999.0;
 	}
 
 	~Node() {}
@@ -92,6 +94,18 @@ public:
 
 	void setLowBoundry(float value) {
 		lowBoundry = value;
+	}
+
+	void clearFinalPath() {
+		this->path.clear();
+	}
+
+	void setOverallFinalPath(string path) {
+		overallFinalPath = path;
+	}
+
+	string getFinalPath() {
+		return overallFinalPath;
 	}
 
 	

@@ -11,8 +11,7 @@ public:
 		vector<pair<int, int>> possibleMoves;
 		possibleMoves = findAllPossibleMoves(p.getNumberOfCities());
 		Node bestSolutionNode;
-
-		vector<Node> solutionTree; 
+		vector<Node> solutionTree;
 		Node treeRoot;
 		lowBoundry2(treeRoot);
 		solutionTree.push_back(treeRoot);
@@ -22,161 +21,64 @@ public:
 			pop_heap(solutionTree.begin(), solutionTree.end());
 
 			//if it is correct result check if it is best - if so remember it
-			if(solutionTree.back().isFinal()) {
-				Node solution = solutionTree.back();
-				solutionTree.pop_back();
-				if(solution.getLowBoundry() > bestSolutionNode.getLowBoundry()) {
-					bestSolutionNode = solution;
-				}
+			Node actualNodeInc = solutionTree.back();
+			Node actualNodeExc = actualNodeInc;
+			int localLowBoundry = actualNodeInc.getLowBoundry();
+			solutionTree.pop_back();
+			if(actualNodeInc.getNodeLevel() == 27) {
+				int i = 0;
+				i++;
+			}
 
-			//else find children of that node
+			actualNodeInc.addIncludedPath(possibleMoves[actualNodeInc.getNodeLevel()]);
+			actualNodeExc.addExcludedPath(possibleMoves[actualNodeExc.getNodeLevel()]);
+
+			if(actualNodeInc.getIncludedSize() > salesman.getNumberOfCities() + 1) {
+				actualNodeInc.setIsCorrectNode(false);
 			} else {
-				Node actualNodeInc = solutionTree.back();
-				Node actualNodeExc = actualNodeInc;
-				solutionTree.pop_back();
-
-				actualNodeInc.addIncludedPath(possibleMoves[actualNodeInc.getNodeLevel()]);
-				actualNodeExc.addExcludedPath(possibleMoves[actualNodeExc.getNodeLevel()]);
-
 				lowBoundry2(actualNodeInc);
-				lowBoundry2(actualNodeExc);
-
-				if(actualNodeInc.isCorrectNode() && actualNodeInc.getLowBoundry() >= treeRoot.getLowBoundry()) {
-					solutionTree.push_back(actualNodeInc);
-					push_heap(solutionTree.begin(), solutionTree.end());
-				}
-
-				if(actualNodeExc.isCorrectNode()&& actualNodeExc.getLowBoundry() >= treeRoot.getLowBoundry()) {
-					solutionTree.push_back(actualNodeExc);
-					push_heap(solutionTree.begin(), solutionTree.end());
-				}
 			}
-		}
-		
-		return createPath(bestSolutionNode);
-	}
-
-
-
-	Path createPath(Node n) {
-		Path end;
-		int numberOfiterations = salesman.getNumberOfCities() + 1;
-		int lastPosition = -1;
-
-		//while(numberOfiterations--) {
-		//	for(int i = 0; i < salesman.getNumberOfCities(); i++) {
-		//		pair<int, int> pair = n.getPath()[i];
-		//		if(pair.first == lastPosition) {
-		//			//-TODO
-		//		}
-		//	}
-		//}
-		end.value = n.getLowBoundry();
-		return end;
-	}
-
-	Node lowBoundry(Node n) {
-		int pathValueCounter = 0;
-		//counting included for each city
-		int* cities = new int[salesman.getNumberOfCities()];
-		//to checking if it's start vertex
-		bool *start = new bool[salesman.getNumberOfCities()];
-		int* groupOf = new int[salesman.getNumberOfCities()];
-		int groupCounter = 0;
-		for(int i = 0; i < salesman.getNumberOfCities(); i++) {
-			cities[i] = 0;
-			groupOf[i] = 0;
-			start[i] = false;
-		}
-
-		for(int i = 0; i < n.getIncludedSize(); i++) {
-			pair<int, int> citiesPair = n.getIncludedAt(i);
-			cities[citiesPair.first]++;
-			cities[citiesPair.second]++;
-
-			if(groupOf[citiesPair.first] != 0 || groupOf[citiesPair.second] != 0) {
-				if(groupOf[citiesPair.first] != 0 && groupOf[citiesPair.second] ==0) {
-					groupOf[citiesPair.second] = groupOf[citiesPair.first];
-				} else
-					if(groupOf[citiesPair.first] == 0 && groupOf[citiesPair.second] != 0) {
-						groupOf[citiesPair.first] = groupOf[citiesPair.second];
-					} else {
-						for(int j = 0; j < salesman.getNumberOfCities(); j++) {
-							if(groupOf[citiesPair.second] > groupOf[citiesPair.first]) {
-								if(groupOf[j] == groupOf[citiesPair.second]) {
-									groupOf[j] = groupOf[citiesPair.first];
-								} else {
-									if(groupOf[j] > groupOf[citiesPair.second]) {
-										groupOf[j]--;
-									}
-								}
-							} else {
-								if(groupOf[j] == groupOf[citiesPair.first]) {
-									groupOf[j] = groupOf[citiesPair.second];
-								} else {
-									if(groupOf[j] > groupOf[citiesPair.first]) {
-										groupOf[j]--;
-									}
-								}
-							}
-						}
-						groupCounter--;
-					}
+			if(actualNodeExc.getIncludedSize() > salesman.getNumberOfCities() + 1) {
+				actualNodeExc.setIsCorrectNode(false);
 			} else {
-				start[citiesPair.first] = true;
-				groupCounter++;
-				groupOf[citiesPair.first] = groupCounter;
-				groupOf[citiesPair.second] = groupCounter;
+				lowBoundry2(actualNodeExc);
 			}
 
-
-			pathValueCounter += salesman.getPathValue(citiesPair.first, citiesPair.second);
-		}
-		//checking possibility of existence
-		n.setIsCorrectNode(true);
-		for(int i = 0; i < salesman.getNumberOfCities(); i++) {
-			if(cities[i]>2) {
-				n.setIsCorrectNode(false);
-			}
-		}
-
-		int least = INT_MAX;
-		if(n.isCorrectNode()) {
-			for(int i = 0; i < salesman.getNumberOfCities(); i++) {
-				//jeœli to nie koniec - w sumie to pewnie gdzies wyzej bedziesz sprawdzal,
-				//bo nie liczy sie dla koncowego przypadku ograniczenia tylko wartosc...
-				if(n.getIncludedSize() != salesman.getNumberOfCities()) {
-					if(cities[i] == 0) {
-						for(int j = 0; j < salesman.getNumberOfCities(); j++) {
-							if(i != j && salesman.getPathValue(i, j) < least && (cities[j] ==0 || start[j] == true)) {
-								//checking excluded
-								if(!isExcluded(n, i, j)) {
-									least = salesman.getPathValue(i, j);
-								}
-							}
-						}
-						pathValueCounter += least;
-						least = INT_MAX;
-					} else
-						if(cities[i] == 1 && !start[i]) {
-							for(int j = 0; j < salesman.getNumberOfCities(); j++) {
-								if(i != j && salesman.getPathValue(i, j) < least && (cities[j] == 0 
-										|| start[j] == true) && groupOf[i]!= groupOf[j]) {
-								
-									if(!isExcluded(n, i, j)) {
-										least = salesman.getPathValue(i, j);
-									}
-								}
-							}
-							pathValueCounter += least;
-							least = INT_MAX;
-						}
+			if(actualNodeInc.isFinal() && actualNodeInc.isCorrectNode()) {
+				int c = 0;
+				c++;
+				if(actualNodeInc.getLowBoundry() < bestSolutionNode.getLowBoundry()) {
+					if(actualNodeInc.getLowBoundry() > 0)
+						bestSolutionNode = actualNodeInc;
 				}
+			} else if(actualNodeInc.isCorrectNode() && actualNodeInc.getLowBoundry() >= localLowBoundry) {
+				solutionTree.push_back(actualNodeInc);
+				push_heap(solutionTree.begin(), solutionTree.end());
 			}
-			n.setLowBoundry(pathValueCounter);
+
+			if(actualNodeExc.isFinal() && actualNodeExc.isCorrectNode()) {
+				int c = 0;
+				c++;
+				if(actualNodeExc.getLowBoundry() < bestSolutionNode.getLowBoundry()) {
+					if(actualNodeExc.getLowBoundry() > 0)
+						bestSolutionNode = actualNodeExc;
+				}
+			} else if(actualNodeExc.isCorrectNode()&& actualNodeExc.getLowBoundry() >= localLowBoundry) {
+				solutionTree.push_back(actualNodeExc);
+				push_heap(solutionTree.begin(), solutionTree.end());
+			}
+
 		}
-		return n;
+		//bestSolutionNode
+		Path fin;
+		fin.value = bestSolutionNode.getLowBoundry();
+		fin.path = bestSolutionNode.getFinalPath();
+		return fin;
+
 	}
+
+
+
 
 
 	bool isExcluded(Node n, int start, int end) {
@@ -203,10 +105,14 @@ public:
 
 	void lowBoundry2(Node &n) {
 		float sumOfPaths = 0;
-
+		n.clearFinalPath();
 		pair<pair<int, int>, pair<int, int>> smallestPaths;
 		for(int i = 0; i < salesman.getNumberOfCities(); i++) {
 			smallestPaths = find2IncludedOrSmallest(n, i);
+			if(smallestPaths.first.first == -1 || smallestPaths.second.first == -1) {
+				n.setIsCorrectNode(false);
+			}
+
 			if(!n.isCorrectNode()) {
 				return;
 			}
@@ -218,7 +124,14 @@ public:
 			sumOfPaths += smallestPaths.second.second;
 			
 		}
-		sumOfPaths /= 2;
+		if(sumOfPaths > 0) {
+			sumOfPaths /= 2;
+		} else {
+			int i = 0;
+			int j = 1;
+			i+=j;
+		}
+
 		n.setLowBoundry(sumOfPaths);
 		setIsFinalAndIsCorrectNodeIfNecessary(n);
 	}
@@ -252,10 +165,13 @@ public:
 		
 		pair<pair<int, int>, pair<int, int>> end = getIncluded(n, from);
 		if(end.second.first == -1 ) {
-			if(end.first.first == -1) {
+			if(end.first.first == -1 ) {
 				end.second = second;
 			} else {
-				end.second = first;
+				if(end.first != first)
+					end.second = first;
+				else
+					end.second = second;
 			}
 		}
 
@@ -287,11 +203,12 @@ public:
 			counterIncluded[n.getIncludedAt(i).first]++;
 			counterIncluded[n.getIncludedAt(i).second]++;
 		}
-
+		int counter = 0;
 		for each (pair<int, int> finalPair in n.getPath()) {
-			counterFinal[finalPair.first]++;
+			//counterFinal[finalPair.first]++;
 			counterFinal[finalPair.second]++;
 		}
+
 
 		for(int i = 0; i < salesman.getNumberOfCities(); i++) {
 			if(counterIncluded[i] > 2) {
@@ -307,17 +224,74 @@ public:
 				break;
 			}
 		}
-
+		n.setIsFinal(true);
 		for(int i = 0; i < salesman.getNumberOfCities(); i++) {
-			cout << counterFinal[i] << " ";
+			//cout << counterFinal[i] << " ";
 
-			if(counterFinal[i] < 2) {
+			if(counterFinal[i] != 2) {
 				n.setIsFinal(false);
+				break;
 			}
 		}
-		cout << endl<<endl;
+		if(n.isCorrectNode() && n.isFinal())
+			uncheckIsCorrectIfHasOneLoopAndCreatePath(n);
+		//cout << endl<<endl;
+
+		delete[] counterIncluded;
+		delete[] counterExcluded;
+		delete[] counterFinal;
+	}
+
+	void uncheckIsCorrectIfHasOneLoopAndCreatePath(Node& n) {
+		vector<pair<int, int>> allPaths = n.getPath();
+		vector<int> overallPath;
+		bool* checked = new bool[allPaths.size()];
+		int* repeats = new int[salesman.getNumberOfCities()];
+		for(int i = 0; i < allPaths.size(); i++) {
+			checked[i] = false;
+			if(i < salesman.getNumberOfCities())
+				repeats[i] = 0;
+		}
+
+		overallPath.push_back(allPaths[0].first);
+		overallPath.push_back(allPaths[0].second);
+		checked[0] = true;
+		repeats[allPaths[0].first]++;
+		repeats[allPaths[0].second]++;
+		while(overallPath.size() != salesman.getNumberOfCities()) {
+			int actual = overallPath.back();
+			int counter = -1;
+  			for each(pair<int, int> path in allPaths) {
+				if(!checked[++counter]) {
+					if(actual == path.first && overallPath[overallPath.size() - 2] != path.second) {
+						if(repeats[path.second] == 1 && overallPath.size() < allPaths.size()) {
+							n.setIsCorrectNode(false);
+							break;
+						} 
+
+						overallPath.push_back(path.second);
+						checked[counter] = true;
+						repeats[path.second]++;
+						break;
+					}
+				}
+			}
+			if(!n.isCorrectNode()) {
+				return;
+			}
+		}
+		Path p;
+		for each(int node in overallPath) {
+			p.addIntToPath(node);
+		}
+		p.addIntToPath(overallPath.front());
+		n.setOverallFinalPath(p.path);
+		
+		delete[] checked;
+		delete[] repeats;
 
 	}
+
 
 	pair<pair<int, int>, pair<int, int>> getIncluded(Node &n, int start) {
 		pair<int, int> result1(-1, -1);

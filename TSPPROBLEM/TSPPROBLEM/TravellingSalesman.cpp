@@ -1,13 +1,31 @@
 #include "TravellingSalesman.h"
 #include <istream>
 #include <ostream>
+#include <string>
+#include <sstream>
 TravellingSalesman::TravellingSalesman():numberOfCities(0) {}
 
 TravellingSalesman::~TravellingSalesman(){}
 
-void TravellingSalesman::loadPaths(istream& stream) {
-	stream >> numberOfCities;
 
+void TravellingSalesman::loadPaths(istream& stream) {
+		string checker;
+		stream >> checker;
+		if(checker.compare("NAME:") == 0) {
+			loadSpecialPaths(stream);
+		} else {
+			std::istringstream stringStream(checker);
+			int size;
+			stringStream >> size;
+			numberOfCities = size;
+			loadNormalPaths(stream);
+		}
+
+
+	}
+
+
+void TravellingSalesman::loadNormalPaths(istream& stream) {
 	for(int i = 0; i < numberOfCities; i++) {
 		vector<int> n;
 		pathsValue.push_back(n);
@@ -15,6 +33,30 @@ void TravellingSalesman::loadPaths(istream& stream) {
 			int value;
 			stream >> value;
 			pathsValue[i].push_back(value);
+		}
+	}
+}
+
+void TravellingSalesman::loadSpecialPaths(istream& stream) {
+	string s;
+	while(s.compare("DIMENSION:") != 0) {
+		stream >> s;
+	}
+	int size;
+	stream >> size;
+	this->numberOfCities = size;
+	pathsValue.clear();
+	while(s.compare("EDGE_WEIGHT_SECTION") != 0) {
+		stream >> s;
+	}
+	pathsValue.resize(size);
+
+	for(int i = 0; i < size; i++) {
+		pathsValue[i].resize(size);
+		for(int j = 0; j < i + 1; j++) {
+			int value;
+			stream >> value;
+			pathsValue[i][j] = pathsValue[j][i] = value;
 		}
 	}
 }

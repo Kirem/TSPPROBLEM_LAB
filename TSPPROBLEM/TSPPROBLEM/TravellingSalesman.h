@@ -6,6 +6,8 @@ using namespace std;
 class TravellingSalesman {
 	int numberOfCities;
 	vector<vector<int>> pathsValue;
+	void loadNormalPaths(istream&);
+	void loadSpecialPaths(istream&);
 public:
 	TravellingSalesman();
 	~TravellingSalesman();
