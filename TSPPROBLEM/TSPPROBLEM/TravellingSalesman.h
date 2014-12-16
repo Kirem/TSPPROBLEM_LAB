@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <random>
 
 using namespace std;
 	 
@@ -13,6 +14,7 @@ public:
 	~TravellingSalesman();
 	void loadPaths(istream&);
 	void printPaths(ostream&);
+	void generateRandomPath(int nrOfCities);
 	int getPathValue(int, int);
 	int getNumberOfCities();
 };

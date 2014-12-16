@@ -37,6 +37,30 @@ void TravellingSalesman::loadNormalPaths(istream& stream) {
 	}
 }
 
+void TravellingSalesman::generateRandomPath(int nrOfCities){
+	numberOfCities = nrOfCities;
+	random_device generator;
+	uniform_int_distribution<int> distribution(1, numberOfCities);
+	for (int i = 0; i < numberOfCities; i++) {
+		vector<int> n;
+		pathsValue.push_back(n);
+		for (int j = 0; j < numberOfCities; j++) {
+			if (i == j){
+				pathsValue[i].push_back(-1);
+			}
+			else{
+				if (j>i){
+					pathsValue[i].push_back(distribution(generator));
+				}
+				else{
+					pathsValue[i].push_back(pathsValue[j][i]);
+				}
+			}
+		}
+	}
+
+}
+
 void TravellingSalesman::loadSpecialPaths(istream& stream) {
 	string s;
 	while(s.compare("DIMENSION:") != 0) {
