@@ -19,7 +19,7 @@ int main(void) {
 	for(int i = 4; i <= NUMBER_OF_SAMPLES; i++) {
 		fstream fileWithCitiesMatrix;
 		stringstream s;
-		s << "komiwojazer"<<1<<".txt";
+		s << "komiwojazer"<<4<<".txt";
 		fileWithCitiesMatrix.open(s.str(), ios::in);
 		salesman.loadPaths(fileWithCitiesMatrix);
 //		salesman.generateRandomPath(5);

@@ -27,4 +27,11 @@ public:
 	void printPath() {
 		cout << path;
 	}
+
+	Path & operator =(const Path & p)
+	{
+		this->value = p.value;
+		this->path = p.path;
+		return *this;
+	}
 };
