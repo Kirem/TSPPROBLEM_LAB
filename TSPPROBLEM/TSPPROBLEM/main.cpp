@@ -8,7 +8,7 @@
 
 void runSimulation(int, int);
 int NUMBER_OF_SAMPLES = 5;
-int NUMBER_OF_REPEATANCE = 5;
+int NUMBER_OF_REPEATANCE = 20;
 
 BranchAndBound BandB;
 TravellingSalesman salesman;
@@ -16,26 +16,31 @@ DynamicProgramming Dyn;
 
 
 int main(void) {
-	for(int i = 4; i <= NUMBER_OF_SAMPLES; i++) {
-		fstream fileWithCitiesMatrix;
-		stringstream s;
-		s << "komiwojazer"<<4<<".txt";
-		fileWithCitiesMatrix.open(s.str(), ios::in);
-		salesman.loadPaths(fileWithCitiesMatrix);
-//		salesman.generateRandomPath(5);
+//	for(int i = 4; i < NUMBER_OF_SAMPLES; i++) {
+//		fstream fileWithCitiesMatrix;
+//		stringstream s;
+//		s << "komiwojazer"<<4<<".txt";
+//		fileWithCitiesMatrix.open(s.str(), ios::in);
+//		salesman.loadPaths(fileWithCitiesMatrix);
+//		salesman.generateRandomPath(7);
 //		salesman.printPaths(cout);
-//		runSimulation(NUMBER_OF_REPEATANCE, i);
-		fileWithCitiesMatrix.close();
+		runSimulation(NUMBER_OF_REPEATANCE, 7);		//czy jakieœ 7, 12, 17, 22, 27? czy wieksze? ja nie wiem jak to pojdzie -.-
+		runSimulation(NUMBER_OF_REPEATANCE, 8);
+		runSimulation(NUMBER_OF_REPEATANCE, 9);
+		runSimulation(NUMBER_OF_REPEATANCE, 10);
+		runSimulation(NUMBER_OF_REPEATANCE, 11);
+//		fileWithCitiesMatrix.close();
+
 
 //		Path p = BandB.BranchAndBoundAlgorithm(salesman);
-		Path p = Dyn.DynamicProgrammingAlgorithm(salesman);
+//		Path p = Dyn.DynamicProgrammingAlgorithm(salesman);
 
-		cout << "path value = " << p.value << endl;
-		cout << "path: "<<p.path<<endl;
+//		cout << "path value = " << p.value << endl;
+//		cout << "path: "<<p.path<<endl;
 
 
 
-	}
+//	}
 
 	//fstream fileWithCitiesMatrix; 
 	//TravellingSalesman salesman;
@@ -61,10 +66,11 @@ void runSimulation(int numberOfTimes, int count) {
 
 	for(int i = 0; i < numberOfTimes; i++) {
 		cout << i << endl;
+		salesman.generateRandomPath(count);
 		Timer timer;
 		timer.startTimer();
-		//sum += simmulation.runAlgorithm().value;
-		BandB.BranchAndBoundAlgorithm(salesman);
+//		sum += simmulation.runAlgorithm().value;
+		Dyn.DynamicProgrammingAlgorithm(salesman);
 		double time = timer.endTimer();
 		dataToSave << time << " ";
 	}
