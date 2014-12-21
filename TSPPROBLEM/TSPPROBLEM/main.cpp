@@ -7,8 +7,9 @@
 #include "DynamicProgramming.h"
 
 void runSimulation(int, int);
+bool menu();
 int NUMBER_OF_SAMPLES = 5;
-int NUMBER_OF_REPEATANCE = 20;
+int NUMBER_OF_REPEATANCE = 100;
 
 BranchAndBound BandB;
 TravellingSalesman salesman;
@@ -24,12 +25,16 @@ int main(void) {
 //		salesman.loadPaths(fileWithCitiesMatrix);
 //		salesman.generateRandomPath(7);
 //		salesman.printPaths(cout);
-		runSimulation(NUMBER_OF_REPEATANCE, 7);		//czy jakieœ 7, 12, 17, 22, 27? czy wieksze? ja nie wiem jak to pojdzie -.-
-		runSimulation(NUMBER_OF_REPEATANCE, 8);
-		runSimulation(NUMBER_OF_REPEATANCE, 9);
-		runSimulation(NUMBER_OF_REPEATANCE, 10);
-		runSimulation(NUMBER_OF_REPEATANCE, 11);
+//		runSimulation(NUMBER_OF_REPEATANCE, 7);		//czy jakieœ 7, 12, 17, 22, 27? czy wieksze? ja nie wiem jak to pojdzie -.-
+//		runSimulation(NUMBER_OF_REPEATANCE, 8);
+//		runSimulation(NUMBER_OF_REPEATANCE, 9);
+//		runSimulation(NUMBER_OF_REPEATANCE, 10);
+//		runSimulation(NUMBER_OF_REPEATANCE, 11);
+//		runSimulation(NUMBER_OF_REPEATANCE, 12);
 //		fileWithCitiesMatrix.close();
+
+		while (menu());
+
 
 
 //		Path p = BandB.BranchAndBoundAlgorithm(salesman);
@@ -57,6 +62,65 @@ int main(void) {
 	getchar();
 }
 
+
+bool menu(){
+
+	int wybor;
+	cout << "\t\tProjektowanie efektywnych algorytmow" << endl << endl;
+	cout << "Implementacja i analiza efektywnosci algorytmu programowania dynamicznego dla problemu komiwojazera." << endl << endl;
+	cout << "1. Wczytaj z pliku \n";
+	cout << "2. Uzyj domyslnego pliku \n";
+	cout << "3. Wyswietl macierz sasiedztwa \n";
+	cout << "4. Algorytm programowania dynamicznego \n";
+	cout << "5. Koniec \n";
+
+	cin >> wybor;
+	string sciezka;
+	fstream fileWithCitiesMatrix;
+	Path p;
+
+	switch (wybor){
+
+	case 1:
+		cout << endl << endl;
+		cout << "Podaj sciezke do pliku dla problemu komiwojazera:\n";
+		cin.clear();
+		cin >> sciezka;
+
+		
+		fileWithCitiesMatrix.open(sciezka, ios::in);
+		salesman.loadPaths(fileWithCitiesMatrix);
+		fileWithCitiesMatrix.close();
+		return true;
+
+	case 2:
+
+		sciezka = "komiwojazer1.txt";
+		fileWithCitiesMatrix.open(sciezka, ios::in);
+		salesman.loadPaths(fileWithCitiesMatrix);
+		fileWithCitiesMatrix.close();
+		return true;
+	
+	case 3:
+		salesman.printPaths(cout);
+		return true;
+
+	case 4:
+		p = Dyn.DynamicProgrammingAlgorithm(salesman);
+
+		cout << "path value = " << p.value << endl;
+		cout << "path: "<<p.path<<endl;
+		return true;
+		
+	case 5:
+		return false;
+	default:
+		menu();
+	}
+	return true;
+
+}
+
 void runSimulation(int numberOfTimes, int count) {
 	std::fstream dataToSave;
 	stringstream s;
@@ -65,6 +129,7 @@ void runSimulation(int numberOfTimes, int count) {
 	int sum = 0;
 
 	for(int i = 0; i < numberOfTimes; i++) {
+		TravellingSalesman salesman;
 		cout << i << endl;
 		salesman.generateRandomPath(count);
 		Timer timer;

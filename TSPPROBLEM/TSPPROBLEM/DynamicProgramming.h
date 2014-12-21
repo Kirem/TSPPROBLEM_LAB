@@ -12,13 +12,14 @@ public:
 		int numOfCities = t.getNumberOfCities();
 		salesman = t;
 		
+		citiesToVisit.clear();
+		
+
 		for (int i = 1; i < numOfCities; i++){		
 			citiesToVisit.push_back(i);
 		}
 
 		return getSolution(0, citiesToVisit);
-
-
 	}
 
 	Path getSolution(int k, vector<int> citiesLeft){
